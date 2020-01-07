@@ -4,12 +4,17 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.os.Bundle;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.sandesh.googlemap.model.LatitudeLongitude;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -40,8 +45,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(27.7061943, 85.3300408);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Hamro College"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        List<LatitudeLongitude> latlngs = new ArrayList<>();
+        latlngs.add(new LatitudeLongitude(27.7061943,85.3300408,"Hamro College"));
+        latlngs.add(new LatitudeLongitude(27.7057242,85.3279674,"Hamro Library College"));
+        //LatLng sydney = new LatLng(27.7061943, 85.3300408,);
+        //mMap.addMarker(new MarkerOptions().position(sydney).title("Hamro College"));
+
+        CameraUpdate center,zoom;
+        for (int i = 0; i < latlngs.size(); i++){
+            center =
+                    CameraUpdateFactory.newLatLng(new LatLng(latlngs.get(i).getLat(),
+                            latlngs.get(i).getLon()));
+            zoom = CameraUpdateFactory.zoomTo(16);
+            mMap.addMarker(new MarkerOptions().position(new LatLng(latlngs.get(i).getLat(),
+                           latlngs.get(i).getLon())).title(latlngs.get(i).getHamro()));
+
+            mMap.moveCamera(center);
+            mMap.animateCamera(zoom);
+            mMap.getUiSettings().setZoomControlsEnabled(true);
+
+        }
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 }
